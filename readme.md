@@ -1,2 +1,12 @@
-v0.0
-初始化springboot项目
+项目结构  
+java:  
+controller:控制器  
+entity:数据实体类  
+service:业务逻辑  
+service.impl:业务逻辑的接口  
+resources:  
+application.properties:参数配置
+v0.0  
+初始化springboot项目  
+v0.0.1  
+添加controller，service,entity层，添加热部署功能，helloworldcontroller测试通过
