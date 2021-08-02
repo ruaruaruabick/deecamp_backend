@@ -11,4 +11,8 @@ v0.0
 v0.0.1  
 添加controller，service,entity层，添加热部署功能，helloworldcontroller测试通过
 v0.2  
-添加baseline相关代码，完善项目结构
+添加baseline相关代码，完善项目结构  
+v0.2.1  
+添加sample.txt
+v0.3.0
+添加图片识别python脚本以及对应url（未测试）
