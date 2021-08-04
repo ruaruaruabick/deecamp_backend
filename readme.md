@@ -13,6 +13,8 @@ v0.0.1
 v0.2  
 添加baseline相关代码，完善项目结构  
 v0.2.1  
-添加sample.txt
+添加sample.txt  
 v0.3.0
-添加图片识别python脚本以及对应url（未测试）
+添加图片识别python脚本以及对应url（未测试）  
+v0.3.1  
+改成java图片识别脚本，并进行测试

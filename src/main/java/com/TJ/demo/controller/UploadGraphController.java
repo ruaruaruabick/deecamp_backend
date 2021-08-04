@@ -2,58 +2,53 @@ package com.TJ.demo.controller;
 
 
 
+import com.TJ.demo.service.impl.recoggraphService;
+import com.TJ.demo.utils.GsonUtils;
+import com.TJ.demo.utils.HttpUtil;
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import org.apache.commons.io.FileUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.Base64Utils;
 import org.springframework.web.bind.annotation.*;
 
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.File;
-import java.util.UUID;
+import java.util.*;
 
 @Controller
 public class UploadGraphController {
+
     @RequestMapping(value="/upbase64",method = RequestMethod.POST)
     @ResponseBody
-    public String uploadbase64(@RequestParam String base64data, HttpServletRequest request, HttpServletResponse response) throws Exception {
-        String dataPrix = "";
-        String data = "";
-        if(base64data == null || "".equals(base64data)){
-            throw new Exception("上传失败，上传图片数据为空");
-        }else{
-            String [] d = base64data.split("base64,");
-            if(d != null && d.length == 2){
-                dataPrix = d[0];
-                data = d[1];
-            }else{
-                throw new Exception("上传失败，数据不合法");
-            }
-        }
-        String suffix = "";
-        if("data:image/jpeg;".equalsIgnoreCase(dataPrix)){//data:image/jpeg;base64,base64编码的jpeg图片数据
-            suffix = ".jpg";
-        } else if("data:image/x-icon;".equalsIgnoreCase(dataPrix)){//data:image/x-icon;base64,base64编码的icon图片数据
-            suffix = ".ico";
-        } else if("data:image/gif;".equalsIgnoreCase(dataPrix)){//data:image/gif;base64,base64编码的gif图片数据
-            suffix = ".gif";
-        } else if("data:image/png;".equalsIgnoreCase(dataPrix)){//data:image/png;base64,base64编码的png图片数据
-            suffix = ".png";
-        }else{
-            throw new Exception("上传图片格式不合法");
-        }
-        String tempFileName = UUID.randomUUID().toString() + suffix;
+    public JSONObject uploadbase64(@RequestParam String base64data, HttpServletRequest request, HttpServletResponse response) throws Exception {
+        String url = "https://aip.baidubce.com/api/v1/solution/direct/imagerecognition/combination";
+        try {
+            Map<String, Object> map = new HashMap<>();
+            map.put("image", base64data.replaceAll(" ","+"));
+            List<Object> scenes = new ArrayList<>();
+            scenes.add("ingredient");
+            scenes.add("plant");
+            scenes.add("animal");
+            scenes.add("advanced_general");
+            scenes.add("logo_search");
+            scenes.add("multi_object_detect");
+            map.put("scenes", scenes);
 
-        //因为BASE64Decoder的jar问题，此处使用spring框架提供的工具包
-        byte[] bs = Base64Utils.decodeFromString(data);
-        try{
-            //使用apache提供的工具类操作流
+            String param = GsonUtils.toJson(map);
 
-            System.out.println(request.getServletContext().getRealPath("/upload"));
-            FileUtils.writeByteArrayToFile(new File(request.getServletContext().getRealPath("/upload"), tempFileName), bs);
-        }catch(Exception ee){
-            throw new Exception("上传失败，写入文件失败，"+ee.getMessage());
+            // 注意这里仅为了简化编码每一次请求都去获取access_token，线上环境access_token有过期时间， 客户端可自行缓存，过期后重新获取。
+            String accessToken = "24.423afa94502b83da9f8c121620a94456.2592000.1630477562.282335-24637773";
+
+            String result = HttpUtil.post(url, accessToken, "application/json", param);
+            System.out.println(result);
+            JSONObject json_test = JSON.parseObject(result);
+            return json_test;
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-        return "success";
+        return null;
     }
 }
