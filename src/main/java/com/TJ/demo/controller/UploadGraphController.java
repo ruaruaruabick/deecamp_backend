@@ -2,28 +2,27 @@ package com.TJ.demo.controller;
 
 
 
-import com.TJ.demo.service.impl.recoggraphService;
+import com.TJ.demo.service.impl.runpyService;
 import com.TJ.demo.utils.GsonUtils;
 import com.TJ.demo.utils.HttpUtil;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import org.apache.commons.io.FileUtils;
 import org.springframework.stereotype.Controller;
-import org.springframework.util.Base64Utils;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.File;
 import java.util.*;
 
 @Controller
 public class UploadGraphController {
-
+    @Resource(name="runpy")
+    private runpyService runpyservice;
     @RequestMapping(value="/upbase64",method = RequestMethod.POST)
     @ResponseBody
     public JSONObject uploadbase64(@RequestParam String base64data, HttpServletRequest request, HttpServletResponse response) throws Exception {
+        ArrayList<String> temp = runpyservice.runpy("recognize.py");
         String url = "https://aip.baidubce.com/api/v1/solution/direct/imagerecognition/combination";
         try {
             Map<String, Object> map = new HashMap<>();
